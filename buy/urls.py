@@ -40,7 +40,9 @@ urlpatterns = patterns('',
 	url(r'^cartitem/update/(?P<pk>\d+)/$', CartItemUV.as_view(), name='cartitem_update'),
 	url(r'^cartitem/delete/(?P<pk>\d+)/$', CartItemDelV.as_view(), name='cartitem_delete'),
 
-	url(r'^commit/(?P<slug>[-\w]+)/$', buy_commit, name='commit')
+	url(r'^commit/(?P<slug>[-\w]+)/$', buy_commit, name='commit'),
+
+	url(r'^narcotic/(?P<slug>[-\w]+)/$', NarcoticLV.as_view(), name='narcotic')
 	
 
 )

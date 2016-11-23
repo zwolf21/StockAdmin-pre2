@@ -83,7 +83,7 @@
 							{% endblock post2 %}
 								{% csrf_token %}
 								<td><div class="ui-widget"><input type="text" id="id_name" name="name" onclick="this.select();"></div></td>
-								<td>{{ form.amount }}<input type="submit" value="입력"></td>
+								<td><input id="id_amount" name="amount" type="number"><input type="submit" value="입력"></td>
 							</form>
 							<td></td>
 							<td></td>

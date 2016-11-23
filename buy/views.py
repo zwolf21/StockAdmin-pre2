@@ -166,8 +166,20 @@ def buy_commit(request, slug):
 	return HttpResponseRedirect(reverse_lazy('buy:buy_list'))
 
 
+class NarcoticLV(ListView):
+	model = BuyItem
+	template_name = 'buy/etc/narcotic_buy.html'
 
 
+	def get_context_data(self, **kwargs):
+		context = super(NarcoticLV, self).get_context_data(**kwargs)
+		query_set =  BuyItem.objects.filter(buy__slug=self.kwargs['slug'], drug__narcotic_class=1, buy__commiter__isnull=False)
+		max_Nrow = 15
+		if query_set.count() < max_Nrow:
+			padding_list = [''] * (max_Nrow- query_set.count())
+		context['object_list'] = query_set
+		context['padding'] = padding_list
+		return context
 
 
 

@@ -4,7 +4,7 @@
 {% if buyitem.pk == object.pk %}
 	<form action="{% url 'buy:buyitem_update' buyitem.buy buyitem.pk %}" method="post">
 	{% csrf_token %}
-		{{ form.amount }}
+		<input id="id_amount" name="amount" type="number" min="0" step="{{ object.drug.pkg_amount }}">
 		<script>
 			tgt = document.getElementById('id_amount')
 			tgt.select();

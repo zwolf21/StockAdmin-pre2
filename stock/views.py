@@ -27,8 +27,6 @@ def BuyStockIn(request):
 				continue
 			else:
 				item.end = True if is_end=='on' else False
-				if is_end=='on':
-					print(is_end)
 				item.save()
 				amount= val
 				if amount.isdigit():
