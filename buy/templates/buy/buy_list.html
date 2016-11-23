@@ -1,0 +1,33 @@
+{% extends "buy/base.html" %}
+
+{% block content %}
+<div class="content">
+	<header>
+	<h4>발주서리스트</h4>		
+	</header>
+	<content>
+	<table border="1" class="tablesorter">
+		<thead>
+			<tr>
+				<th>발주번호</th>
+				<th>발주서요약</th>
+				<th>발주일자</th>
+				<th>발주승인자</th>인
+				<th>승인일자</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for object in object_list %}
+			<tr>
+				<td>{{ object }}</td>
+				<td><a href="{% url 'buy:buy_detail' object.slug %}">{{ object.description }}</a></td>
+				<td>{{ object.date|date:"Y-m-d" }}</td>
+				<td>{{ object.commiter|default:"미승인" }}</td>
+				<td>{{ object.date|date:"Y-m-d" }}</td>
+			</tr>	
+		{% endfor %}
+		</tbody>
+	</table>
+	</content>
+</div>
+{% endblock content %}

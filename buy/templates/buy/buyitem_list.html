@@ -1,0 +1,30 @@
+{% extends "buy/cart_list.html" %}
+
+{% block header %}
+			<h4>구매요청서 항목 변경</h4>
+			<h5>거래처: {{ object_list.first.drug.account }}</h5>
+			<h5>발주번호: {{ object_list.first.buy }}</h5>
+{% endblock header %}
+
+{% block post2 %}
+		<form action="{% if object_list.first %}{% url 'buy:buy_detail' object_list.first.buy %}{% endif %}" method="post">
+{% endblock post2 %}
+
+{% block btn_group %}
+	
+<div class="btn-group">
+	<a class="btn btn-default" href="{% if object_list.first %}{% url 'buy:buy_detail' object_list.first.buy %}{% endif %}">항목수정완료</a>
+</div>
+{% endblock btn_group %}
+{% block glyphicon %}
+			<td><a href="{% url 'buy:buyitem_update' buyitem.buy buyitem.pk %}" tabindex="-1"><span class="glyphicon glyphicon-pencil"></span></a></td>
+			<td>
+				<form action="{% url 'buy:buyitem_delete' buyitem.buy buyitem.pk %}" method="post">
+					{% csrf_token %}
+					<button type="submit" class="submit-with-icon">
+							<span class="glyphicon glyphicon-trash"></span>
+					</button>
+				</form>
+			</td>
+{% endblock glyphicon %}
+

@@ -1,0 +1,107 @@
+{% extends "buy/base.html" %}
+{% block content %}
+<style type="text/css">
+	.content{
+		margin-left: 50px;
+		margin-right: 50px;
+	}
+
+	table {
+		border-collapse: collapse;
+	}
+	tr, th, td, thead{
+		border: 1px solid #eee;
+		text-align: center;
+		height: 20px;
+	}
+	.submit-with-icon {
+  background: transparent;
+    border: 0px;
+    padding: 0;
+    outline: 0;
+}
+.head{
+	float: left;
+	margin: left:50px;
+}
+</style>
+
+<div class="content">
+			{% block header %}
+				<div class="head">
+					<h2>발주 입력</h2>	
+					<form action="{% url 'buy:buy_add' %}" method="post">
+						{% csrf_token %}
+						{{ create_buy_form.date }}
+						<input class="btn btn-primary" type="submit" value="발주서로 올리기">
+					</form>
+				</div>
+			{% endblock header %}
+			
+			<div>
+				<table class="tablesorter">
+					<thead>
+						<tr>
+							<th width="50px;">거래처</th>
+							<th width="150px">약품명</th>
+							<th width="40px;">요구수량</th>
+							<th width="20px;">포장단위</th>
+							<th width="20px;">누적미입고량</th>
+							<th width="20px;">누적입고량</th>
+							<th width="10px;">최종입고일</th>
+							<th width="30px;">수정</th>
+							<th width="30px;">삭제</th>
+						</tr>
+					</thead>
+					<tbody>	
+					{% for buyitem in object_list %}
+						<tr>
+							<td>{{ buyitem.drug.account }}</td>
+							<td>{{ buyitem.drug }}</td>
+							<td>{% block amount %} {{ buyitem.amount }}{% endblock amount %}</td>
+							<td>{{ buyitem.drug.pkg_amount }}</td>
+							<td>{{ buyitem.drug.total_incomplete_amount }}</td>
+							<td>{{ buyitem.drug.total_stockin_amount }}</td>
+							<td>{{ buyitem.drug.last_stockin_date|date:"Y-m-d" }}</td>
+							{% block glyphicon %}
+							<td><a href="{% url 'buy:cartitem_update' buyitem.pk %}" tabindex="-1"><span class="glyphicon glyphicon-pencil"></span></a></td>
+							<td>
+								<form action="{% url 'buy:cartitem_delete' buyitem.pk %}" method="post">
+									{% csrf_token %}
+									<button type="submit" class="submit-with-icon">
+	   									<span class="glyphicon glyphicon-trash"></span>
+									</button>
+								</form>
+							</td>
+							{% endblock glyphicon %}
+						</tr>
+					{% endfor %}
+						<tr>
+							<td>{{ buyitem.drug.account }}</td>
+							{% block post2 %}
+							<form action="{% url 'buy:cartitem_add' %}" method="post">
+							{% endblock post2 %}
+								{% csrf_token %}
+								<td><div class="ui-widget"><input type="text" id="id_name" name="name" onclick="this.select();"></div></td>
+								<td>{{ form.amount }}<input type="submit" value="입력"></td>
+							</form>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							{% block script %}
+								<script> document.getElementById('id_name').select(); </script>
+							{% endblock script %}
+						</tr>
+					</tbody>
+				</table>
+
+				{% block btn_group %}
+					
+				{% endblock btn_group %}
+			</div>
+</div>
+{% include "ajax_autocomplete_script.html" %}
+{% endblock content %}

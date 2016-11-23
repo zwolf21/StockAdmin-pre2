@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %} StockAdmin {% endblock title %}</title>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static "bootstrap-3.3.7-dist/css/bootstrap.min.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "jquery-ui-1.12.1.custom/jquery-ui.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/base.css" %}">
+{# <link rel="stylesheet" type="text/css" href="{% static "css/third.css" %}"> #}
+<link rel="stylesheet" type="text/css" href="{% static "tablesorter/themes/blue/style.css" %}">
+
+
+
+<script src="{% static "jquery-3.1.1.min.js" %}"></script>
+<script src="{% static "bootstrap-3.3.7-dist/js/bootstrap.min.js" %}"></script>
+<script src="{% static "jquery-ui-1.12.1.custom/jquery-ui.js" %}"></script>
+<script src="{% static "tablesorter/jquery.tablesorter.min.js" %}"></script>
+
+
+
+
+</head>
+<body>
+
+		
+
+<div id="menu">
+
+	    <div class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" href="#">
+                               	약품정보
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-submenu">
+                                    <a>업데이트</a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="{% url 'info:updatexl' %}">엑셀파일</a>
+                                        </li>
+                                      
+                                    </ul>
+                                </li>
+                         
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" href="#">
+                               	입고
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+	                                <a href="{% url 'stock:showincomplete' %}">미입고 조회(입고 잡기)</a>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a>기간별입고현황</a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="/stock/showMonth{% now "/Y/b" %}">월간 입고현황</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">품목 입고현황</a>
+                                        </li>
+                                      
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" href="#">
+                               	구매
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-submenu">
+                                    <a>구매 요청서 작성</a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="{% url 'buy:cartitem_add' %}">장바구니</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="{% url 'buy:buy_list' %}">구매 요청서 목록</a>
+                                     <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="#">월간</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">일일</a>
+                                        </li>
+                                      
+                                    </ul>
+
+                                </li>
+                            </ul>
+                        </li>
+                       
+                    </ul>
+                     <ul class="nav navbar-nav navbar-right">
+                        {% if user.is_active %}
+                        <li>
+                            <div class="navbar-text">
+                                현재 사용자 <strong>{{ user }}</strong>
+                            </div>
+                        </li>
+                        <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-logout√"></span>로그아웃</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}"><span class="{% url 'login' %}"></span>로그인</a></li>
+                        {% endif %}
+                        
+                    </ul>
+                </div>
+            </div>
+    </div>
+</div>
+<div id="footer" height="1200">
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</p>
+
+</div>
+{% block content %}{% endblock content %}
+{% block footer %}
+
+{% endblock footer %}
+
+
+</body>
+<script type="text/javascript">
+    $(document).ready(function(){
+$("#mytable #checkall").click(function () {
+        if ($("#mytable #checkall").is(':checked')) {
+            $("#mytable input[type=checkbox]").each(function () {
+                $(this).prop("checked", true);
+            });
+
+        } else {
+            $("#mytable input[type=checkbox]").each(function () {
+                $(this).prop("checked", false);
+            });
+        }
+    });
+    
+    $("[data-toggle=tooltip]").tooltip();
+});
+
+
+</script>
+</html>				

@@ -1,0 +1,72 @@
+{% extends "stock/base.html" %}
+{% load humanize %}
+{% block content %}
+	
+
+{% block table %}
+<div class="content">
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+     <div class="navbar-header">
+        <a class="navbar-brand" href="">{{ month|date:"Y" }}년</a>
+    </div>
+   
+
+    <ul class="nav navbar-nav">
+      	<li><a href="/stock/showMonth{% now "/Y/" %}jan">1월</a></li>
+      	<li><a href="/stock/showMonth{% now "/Y/" %}feb">2월</a></li>
+      	<li><a href="/stock/showMonth{% now "/Y/" %}mar">3월</a></li>
+      	<li><a href="/stock/showMonth{% now "/Y/" %}apr">4월</a></li>
+      	<li><a href="/stock/showMonth{% now "/Y/" %}may">5월</a></li>
+      	<li><a href="/stock/showMonth{% now "/Y/" %}jun">6월</a></li>
+      	<li><a href="/stock/showMonth{% now "/Y/" %}jul">7월</a></li>
+      	<li><a href="/stock/showMonth{% now "/Y/" %}aug">8월</a></li>
+      	<li><a href="/stock/showMonth{% now "/Y/" %}sep">9월</a></li>
+      	<li><a href="/stock/showMonth{% now "/Y/" %}oct">10월</a></li>
+      	<li><a href="/stock/showMonth{% now "/Y/" %}nov">11월</a></li>
+      	<li><a href="/stock/showMonth{% now "/Y/" %}dec">12월</a></li>   
+    </ul>
+  </div>
+ </nav>
+{% block header %}
+	<h3>{{ month|date:"Y-m" }} 입고내역</h3>
+{% endblock header %}
+<table class="tablesorter">
+	<thead>
+			<tr>
+				<th width="5%">입고일자</th>
+				<th width="5%">발주번호</th>
+				<th width="5%">거래처</th>
+				<th width="20%">약품명</th>
+				<th width="4%">입고수량</th>
+				<th width="4%">입고단가</th>
+				<th width="4%">입고금액</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for object in object_list %}
+			<tr>
+				<td>{{ object.date|date:"Y-m-d" }}</td>
+				<td>{{ object.buyitem.buy }}</td>
+				<td>{{ object.drug.account }}</td>
+				<td>{{ object.drug }}</td>
+				<td style="text-align: center">{{ object.amount }}</td>
+				<td style="text-align: center">{{ object.drug.price|intcomma }}</td>
+				<td style="text-align: center">{{ object.total_price|intcomma }}</td>
+			</tr>
+		{% endfor %}
+		<tr style="text-align: center">
+			<td colspan="6" > 종합:</td>
+			<td colspan="1">{{ total_price|intcomma }}</td>
+		</tr>
+		</tbody>
+	
+</table>
+</div>
+
+
+
+{% endblock table %}
+
+
+{% endblock content %}

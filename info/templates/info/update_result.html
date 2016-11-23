@@ -1,0 +1,24 @@
+
+<div class="content">
+	<h2>총 {{ total_count }} 중</h2>
+	<h3>업데이트 성공 항목 개수 {{ success_count }}</h3>
+	<h3>실패항목 수 {{ failure_count }}</h3>
+	<h4>실패항목</h4>
+	<table border="1">
+		<thead>
+			<tr>
+				<th> 약품코드 </th> <th> 약품명 </th> <th> 원인유형 </th> <th> 원인 </th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for failure in failures %}
+			<tr>
+				<td>{{ failure.error_drug_code }}</td>
+				<td>{{ failure.error_drug_name }}</td>
+				<td>{{ failure.error_type }}</td>
+				<td>{{ failure.error_value }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>

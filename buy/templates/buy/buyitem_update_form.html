@@ -1,0 +1,20 @@
+{% extends "buy/buyitem_list.html" %}
+
+{% block amount %}
+{% if buyitem.pk == object.pk %}
+	<form action="{% url 'buy:buyitem_update' buyitem.buy buyitem.pk %}" method="post">
+	{% csrf_token %}
+		{{ form.amount }}
+		<script>
+			tgt = document.getElementById('id_amount')
+			tgt.select();
+		</script>
+	</form>
+{% else %}
+	{{ buyitem.amount }}
+{% endif %}
+{% endblock amount %}
+
+{% block script %}
+	
+{% endblock script %}

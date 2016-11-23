@@ -1,0 +1,14 @@
+{% extends "buy/cart_list.html" %}
+
+{% block header %}
+	<table>
+		<tr>
+			<td><h2>발주 입력</h2></td>
+			<td>
+				<form>
+					{{ buy_create_form.date }}
+				</form>
+			</td>
+		</tr>
+	</table>
+{% endblock header %}
