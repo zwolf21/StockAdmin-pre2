@@ -42,7 +42,7 @@ class DrugInfoFromXlFile(FormView):
 		os.remove(temp_file)
 
 		src_field_set = set(di_table[0])
-		essential_field_set = {'약품코드','EDI코드','약품명(한글)','제약회사명','일반단가'}
+		essential_field_set = {'약품코드','EDI코드','약품명(한글)','제약회사명','일반단가','수가명','규격단위'}
 		if not essential_field_set < src_field_set:
 			context = {
 				'error_message' : '엑셀파일에 지정된 필수 컬럼(열) 항목이 없습니다',
@@ -74,7 +74,7 @@ class DrugInfoFromXlFile(FormView):
 					price = row['일반단가'],
 					pkg_amount = row.get('포장단위') or 1,
 					standard_unit = row['규격단위'],
-					narcotic_class = int(row['약품법적구분']),
+					narcotic_class = int(row.get('약품법적구분') or 0)
 				)
 			except:
 				exception = {}

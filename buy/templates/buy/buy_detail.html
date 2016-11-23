@@ -44,7 +44,7 @@
 					<th>제조회사</th>
 					<th>구매수량</th>
 					<th>구매규격</th>
-					<th>구매금액(원)</th>
+					<!-- <th>구매금액(원)</th> -->
 				</tr>
 			</thead>
 			<tbody>
@@ -56,13 +56,13 @@
 					<td>{{ item.drug.firm }}</td>
 					<td>{% widthratio item.amount item.drug.pkg_amount 1 %}</td>
 					<td>{{ item.drug.standard_unit }}</td>
-					<td>{{ item.get_buy_price|intcomma }}</td>
+					<!-- <td>{{ item.get_buy_price|intcomma }}</td> -->
 				</tr>
 			{% endfor %}
-				<tr>
+				<!-- <tr>
 					<td colspan="6" style="text-align: center">계: {{ object.description }}</td>
 					<td>{{ object.get_total_price|intcomma }}</td>
-				</tr>
+				</tr> -->
 			</tbody>
 		</table>
 </div>
