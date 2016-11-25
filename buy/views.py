@@ -59,8 +59,12 @@ class CartItemCV(LoginRequiredMixin ,CreateView):
 	# model = BuyItem
 	fields = ['amount']
 	form_class = BuyItemAddForm
-	success_url = reverse_lazy('buy:cartitem_add')
+	# success_url = reverse_lazy('buy:cartitem_add')
 	template_name = 'buy/cart_list.html'
+
+	def get_success_url(self):
+		return reverse_lazy('buy:cartitem_add')
+
 
 
 	def get_context_data(self, **kwargs):
@@ -75,7 +79,7 @@ class CartItemCV(LoginRequiredMixin ,CreateView):
 		context = self.get_context_data()
 
 		if name == '':
-			return HttpResponseRedirect(self.success_url)
+			return HttpResponseRedirect(self.get_success_url())
 
 		try:
 			drug = Info.objects.get(name=name)
@@ -83,8 +87,15 @@ class CartItemCV(LoginRequiredMixin ,CreateView):
 			context['error_message'] = '해당품목이 존재 하지 않습니다(%s)' % name 
 			return self.render_to_response(context)			
 		else:
+
 			if context['object_list'].filter(drug=drug).exists():
-				return HttpResponseRedirect(self.success_url)
+				return HttpResponseRedirect(self.get_success_url())
+
+			if self.kwargs.get('slug'):
+				if not context['object_list'].filter(drug__account=drug.account).exists():
+					return HttpResponseRedirect(self.get_success_url())
+				
+
 			form.instance.drug = drug
 			form.instance.by = self.request.user
 			return super(CartItemCV, self).form_valid(form)
@@ -93,6 +104,7 @@ class CartItemCV(LoginRequiredMixin ,CreateView):
 
 class BuyItemCV(CartItemCV):
 	template_name = 'buy/buyitem_list.html'
+	
 
 	def get_success_url(self):
 		return reverse_lazy('buy:buyitem_add', args=(self.kwargs['slug'],))
@@ -104,6 +116,9 @@ class BuyItemCV(CartItemCV):
 
 	def form_valid(self, form):
 		form.instance.buy = Buy.objects.get(slug=self.kwargs.get('slug'))
+
+
+
 		return super(BuyItemCV, self).form_valid(form)
 
 
@@ -143,6 +158,8 @@ class CartItemDelV(LoginRequiredMixin, DeleteView):
 	template_name = 'buy/buyitem_confirm_delete.html'
 
 
+
+
 class BuyItemDelV(LoginRequiredMixin, DeleteView):
 	model = BuyItem
 	template_name = 'buy/buyitem_confirm_delete.html'
@@ -166,6 +183,7 @@ def buy_commit(request, slug):
 	return HttpResponseRedirect(reverse_lazy('buy:buy_list'))
 
 
+
 class NarcoticLV(ListView):
 	model = BuyItem
 	template_name = 'buy/etc/narcotic_buy.html'
@@ -176,7 +194,7 @@ class NarcoticLV(ListView):
 		query_set =  BuyItem.objects.filter(buy__slug=self.kwargs['slug'], drug__narcotic_class=1, buy__commiter__isnull=False)
 		max_Nrow = 15
 		if query_set.count() < max_Nrow:
-			padding_list = [''] * (max_Nrow- query_set.count())
+			padding_list = [''] * (max_Nrow - query_set.count())
 		context['object_list'] = query_set
 		context['padding'] = padding_list
 		return context

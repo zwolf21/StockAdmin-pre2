@@ -68,11 +68,12 @@
 </div>
 <div class="btn-group">
 	{% if not object.commiter %}
-		
 	<a class="btn btn-default" href="{% url 'buy:buyitem_add' object.slug %}">항목수정</a>
 		{% if user.is_staff %}
-		<a class="btn btn-danger" href="{% url 'buy:commit' object.slug %}">발주승인</a>
+	<a class="btn btn-danger" href="{% url 'buy:commit' object.slug %}">발주승인</a>
 		{% endif %}
+	{% else %}
+	<a class="btn btn-primary" href="{% url 'buy:narcotic' object.slug %}">마약구매서</a>
 	{% endif %}
 </div>
 <div>

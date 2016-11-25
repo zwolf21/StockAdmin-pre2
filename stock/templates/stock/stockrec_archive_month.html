@@ -3,8 +3,9 @@
 {% block content %}
 	
 
-{% block table %}
 <div class="content">
+{% block month_header %}
+	
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
      <div class="navbar-header">
@@ -28,9 +29,12 @@
     </ul>
   </div>
  </nav>
+{% endblock month_header %}
+
 {% block header %}
 	<h3>{{ month|date:"Y-m" }} 입고내역</h3>
 {% endblock header %}
+
 <table class="tablesorter">
 	<thead>
 			<tr>
@@ -55,18 +59,21 @@
 				<td style="text-align: center">{{ object.total_price|intcomma }}</td>
 			</tr>
 		{% endfor %}
-		<tr style="text-align: center">
-			<td colspan="6" > 종합:</td>
-			<td colspan="1">{{ total_price|intcomma }}</td>
-		</tr>
 		</tbody>
 	
 </table>
+
+
+		<div style="text-align: right;">
+			<td colspan="6" > 종합:</td>
+			<td>{{ object_list.count }}건: </td>
+			<td colspan="1">{{ total_price|intcomma }}</td>
+			
+		</div>
 </div>
 
 
 
-{% endblock table %}
 
-
+{% include "tablesorter_js.html" %}
 {% endblock content %}

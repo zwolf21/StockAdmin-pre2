@@ -65,7 +65,7 @@
                                             <a href="/stock/showMonth{% now "/Y/b" %}">월간 입고현황</a>
                                         </li>
                                         <li>
-                                            <a href="#">품목 입고현황</a>
+                                            <a href="{% url 'stock:stockin_period' %}">기간별 입고현황</a>
                                         </li>
                                       
                                     </ul>
@@ -131,7 +131,10 @@
 
 {% endblock footer %}
 
+<div id="footer" style="display: block; height: 1200px;">
 
+    
+</div>
 </body>
 <script type="text/javascript">
     $(document).ready(function(){

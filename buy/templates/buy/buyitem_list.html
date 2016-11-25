@@ -7,7 +7,7 @@
 {% endblock header %}
 
 {% block post2 %}
-		<form action="{% if object_list.first %}{% url 'buy:buy_detail' object_list.first.buy %}{% endif %}" method="post">
+		<form action="{% if object_list.first %}{% url 'buy:buyitem_add' object_list.first.buy %}{% endif %}" method="post">
 {% endblock post2 %}
 
 {% block btn_group %}

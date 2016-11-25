@@ -79,15 +79,25 @@ class StockInMAV(MonthArchiveView):
 
 
 
+def stockin_plv(request):
+	form = DateRangeForm(request.POST or None)
+	if request.method=='POST':
+		start = datetime.strptime(request.POST.get('start'),"%Y-%m-%d")
+		end = datetime.strptime(request.POST.get('end'),"%Y-%m-%d")
+		general = [0,2] if request.POST.get('general') else []
+		narcotic = [1] if request.POST.get('narcotic') else []
 
-
-
-
-
-
-
-
-
+		queryset = StockRec.objects.filter(
+				date__range=(start, end), 
+				amount__gt=0, 
+				drug__narcotic_class__in=general+narcotic
+			)
+		total_price = 0
+		for s in queryset:
+			total_price+=s.total_price
+		return render(request, 'stock/stockin_period.html',{'object_list':queryset,'form':form,'total_price':total_price})
+	else:
+		return render(request, 'stock/stockin_period.html',{'form':form})
 
 
 
