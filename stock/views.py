@@ -41,13 +41,13 @@ def BuyStockIn(request):
 
 def ShowIncompletes(request):
 	form = DateRangeForm(request.POST or None)
+	end = date.today()
+	start = end - timedelta(30)
 	if request.method == 'POST':
 		if form.is_valid():
 			start = form.cleaned_data['start']
 			end = form.cleaned_data['end']
-	else:
-		end = date.today()
-		start = end - timedelta(30)
+	
 		
 	query_set = BuyItem.objects.filter(buy__date__range=(start, end)).filter(end=False, buy__commiter__isnull=False).order_by('drug__firm','drug__name')
 	object_list = filter(lambda item: not item.is_completed, query_set)
