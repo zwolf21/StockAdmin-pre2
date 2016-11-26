@@ -44,12 +44,13 @@ def ShowIncompletes(request):
 	end = date.today()
 	start = end - timedelta(30)
 	if request.method == 'POST':
-		if form.is_valid():
-			start = form.cleaned_data['start']
-			end = form.cleaned_data['end']
-	
+		start = datetime.strptime(request.POST.get('start'), "%Y-%m-%d")
+		end = datetime.strptime(request.POST.get('end'), "%Y-%m-%d")
 		
 	query_set = BuyItem.objects.filter(buy__date__range=(start, end)).filter(end=False, buy__commiter__isnull=False).order_by('drug__firm','drug__name')
+	for e in query_set:
+		print(e)
+
 	object_list = filter(lambda item: not item.is_completed, query_set)
 	return render(request, 'stock/미입고내역.html', {'object_list':object_list, 'form':form})
 
