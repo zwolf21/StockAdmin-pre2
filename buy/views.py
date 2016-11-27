@@ -26,6 +26,8 @@ class TestTV(TemplateView):
 
 class BuyLV(ListView):
 	model = Buy
+	paginate_by = 50
+	
 
 
 

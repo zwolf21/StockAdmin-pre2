@@ -43,15 +43,15 @@
 				<table class="tablesorter">
 					<thead>
 						<tr>
-							<th width="50px;">거래처</th>
-							<th width="150px">약품명</th>
-							<th width="40px;">요구수량</th>
-							<th width="20px;">포장단위</th>
-							<th width="20px;">누적미입고량</th>
-							<th width="20px;">누적입고량</th>
-							<th width="10px;">최종입고일</th>
-							<th width="30px;">수정</th>
-							<th width="30px;">삭제</th>
+							<th>거래처</th>
+							<th>약품명</th>
+							<th>요구수량</th>
+							<th>포장단위</th>
+							<th>미입고량</th>
+							<th>주간평균입고량</th>
+							<th>최종입고일/수량</th>
+							<th>수정</th>
+							<th>삭제</th>
 						</tr>
 					</thead>
 					<tbody>	
@@ -62,8 +62,8 @@
 							<td>{% block amount %} {{ buyitem.amount }}{% endblock amount %}</td>
 							<td>{{ buyitem.drug.pkg_amount }}</td>
 							<td>{{ buyitem.drug.total_incomplete_amount }}</td>
-							<td>{{ buyitem.drug.total_stockin_amount }}</td>
-							<td>{{ buyitem.drug.last_stockin_date|date:"Y-m-d" }}</td>
+							<td>{{ buyitem.drug.monthly_avg_stockin }}</td>
+							<td>{{ buyitem.drug.last_stockin_date|date:"Y-m-d" }}{% if buyitem.drug.last_stockin_date %}/{% endif %}{{ buyitem.drug.last_stockin_amount }}</td>
 							{% block glyphicon %}
 							<td><a href="{% url 'buy:cartitem_update' buyitem.pk %}" tabindex="-1"><span class="glyphicon glyphicon-pencil"></span></a></td>
 							<td>

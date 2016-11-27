@@ -18,6 +18,7 @@ class Buy(models.Model):
 	class Meta:
 		verbose_name='발주'
 		verbose_name_plural='발주'
+		ordering = ('-slug',)
 
 	def __str__(self):
 		return self.slug
@@ -49,6 +50,12 @@ class Buy(models.Model):
 		return ret
 
 
+class BuyItemManager(models.Manager):
+	def filter_by_date(self, *args):
+		start_date, end_date = args
+		return  BuyItem.objects.filter(buy__date__range=args)
+
+
 class BuyItem(models.Model):
 	drug = models.ForeignKey(Info, verbose_name='구매약품')
 	buy = models.ForeignKey(Buy, verbose_name='발주번호', null=True, blank=True)
@@ -59,6 +66,7 @@ class BuyItem(models.Model):
 	modify_date = models.DateField('변경일자', auto_now=True)
 	by = models.ForeignKey(User, verbose_name='구매자', default=1)
 
+	objects = BuyItemManager()
 	class Meta:
 		verbose_name='구매품목'
 		verbose_name_plural='구매품목'
@@ -89,35 +97,5 @@ class BuyItem(models.Model):
 	def get_nowbuying(self):
 		return BuyItem.objects.filter(buy__isnull=True)
 
-
 	def get_buy_price(self):
 		return self.amount * self.drug.price
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

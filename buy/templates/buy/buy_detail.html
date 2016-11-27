@@ -31,7 +31,7 @@
 		</tr>
 		<tr>
 			<td height="80px" class="user">{{ user }}</td>
-			<td class="user">{{ object.commiter }}</td>
+			<td class="user">{{ object.commiter|default:"미승인" }}</td>
 		</tr>
 	</table>
 

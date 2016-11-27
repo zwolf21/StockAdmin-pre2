@@ -12,19 +12,20 @@ from buy.models import Buy, BuyItem
 
 
 
+
 class StockRec(models.Model):
 
 	buyitem = models.ForeignKey(BuyItem, verbose_name='구매품목', null=True, blank=True)
 	drug = models.ForeignKey(Info, verbose_name='약품명', blank=True)
 	amount = models.PositiveIntegerField('수량')
-	date = models.DateField('발생일자', auto_now_add=True)
+	date = models.DateField('발생일자')
 	frozen = models.BooleanField('재고마감여부', default=False)
 	inout = models.IntegerField('구분', choices=[(1,'구매입고'),(2,'불출')], default=1)
 
 	class Meta:
 		verbose_name='입출고 기록'
 		verbose_name_plural='입출고 기록'
-		ordering = ['date']
+		ordering = ['-date']
 
 	def __str__(self):
 		return self.drug.name
@@ -41,6 +42,9 @@ class StockRec(models.Model):
 	@property
 	def total_price(self):
 		return self.amount * self.drug.price
+
+	
+
 
 
 

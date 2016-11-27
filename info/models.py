@@ -1,6 +1,8 @@
 from django.db import models
-from django.db.models import Sum, Max, Q
+from django.db.models import Sum, Max, Q, Min
 from django.contrib.auth.models import User
+from datetime import date
+
 # Create your models here.
 
 
@@ -56,7 +58,7 @@ class Info(models.Model):
 	@property
 	def total_incomplete_amount(self):
 		incomplete = 0
-		for item in self.buyitem_set.filter(buy__isnull=False):
+		for item in self.buyitem_set.filter(buy__isnull=False, buy__commiter__isnull=False):
 			incomplete += item.incomplete_amount
 		return incomplete
 
@@ -70,17 +72,33 @@ class Info(models.Model):
 		return self.stockrec_set.aggregate(Max('date'))['date__max']
 
 	@property
+	def first_stockin_date(self):
+		return self.stockrec_set.aggregate(Min('date'))['date__min']
+
+	@property
 	def last_stockin_amount(self):
-		if self.last_stockin_date:
-			return self.stockrec_set.get(date=self.last_stockin_date).amount
+		return self.stockrec_set.values('amount').annotate(Max('date')).first()['amount']
+
 
 	@property
 	def last_buy_date(self):
 		return self.buyitem_set.aggregate(Max('buy__date'))['buy__date__max']
 
+		
+
+
 	@property
-	def last_buy_amount(self):
-		if last_buy_date:
-			return self.buyitem_set.get(date=last_buy_date).amount
+	def monthly_avg_stockin(self):
+		first_stockin_date = self.first_stockin_date
+		cur_date = date.today()
+		period = round((cur_date-first_stockin_date).days/30) or 1
+		total_stockin_amount = self.total_stockin_amount
+		return (total_stockin_amount//period)
 
-
+	@property
+	def weekly_avg_stockin(self):
+		first_stockin_date = self.first_stockin_date
+		cur_date = date.today()
+		period = round((cur_date-first_stockin_date).days/7) or 1
+		total_stockin_amount = self.total_stockin_amount
+		return (total_stockin_amount//period)

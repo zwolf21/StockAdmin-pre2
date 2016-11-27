@@ -22,10 +22,11 @@ $(function(){
                         response(rsp);
                         if(data.length==1)
                         {
-                            tgt = $("[name='name']")
-                            tgt.val(data[0].drug_name)
-                            tgt.focus()
-                            // tgt.select()
+                            tgt = $("[name='name']");
+                            tgt.val(data[0].drug_name);
+                            tgt.focus();
+                            $("[name=amount]").attr({'min':data[0].pkg_amount, 'step':data[0].pkg_amount}).val(data[0].pkg_amount);
+                            
                         }
                     }
                });
@@ -39,17 +40,16 @@ $(function(){
             $("[name='stockacc']").val(ui.item.stockacc)
             $("[name='incompletes']").val(ui.item.incompletes)
             $("[name='stocklast']").val(ui.item.stocklast)
-
+    
             
         },
         change : function(event, ui){
-
+            
         },
 
         focus: function( event, ui ) {
             event.preventDefault(); 
             $("[name=amount]").attr({'min':ui.item.pkg_amount, 'step':ui.item.pkg_amount}).val(ui.item.pkg_amount);
-
 
         }
     });

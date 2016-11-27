@@ -27,7 +27,8 @@
 		
 	<form action="{% url 'stock:showincomplete' %}" method="post">
 	{% csrf_token %}
-	기간: {{ form.start }}~ {{ form.end }}
+	발주기간: {{ form.start }}~ {{ form.end }}
+
 	<input type="submit" value="조회">	
 	</form>
 	{% endblock dateinput %}
@@ -35,6 +36,7 @@
 	{% block table %}
 	<form action="{% url 'stock:stockin' %}" method="post">
 	{% csrf_token %}
+		<p>입고일자: {{ form.indate }}</p>
 	<table class="tablesorter">
 		<thead>
 			<tr>
@@ -70,11 +72,10 @@
 	
 	{% endblock table %}
 </div>
+{% include "datepicker_js.html" %}
+
 <script type="text/javascript">
-  $(function(){
-  $("#id_start, #id_end").datepicker({
-    	dateFormat: 'yy-mm-dd'
-    });
+
 
 
 	var start = $("#id_start")

@@ -1,0 +1,33 @@
+{% extends "stock/period_tv.html" %}
+{% load humanize %}
+{% block tablistclass %}class="active"{% endblock tablistclass %}
+{% block stock_content %}
+	<table class="tablesorter">
+		<thead>
+			<tr>
+				<th width="5%">입고일자</th>
+				<th width="5%">발주번호</th>
+				<th width="5%">거래처</th>
+				<th width="20%">약품명</th>
+				<th width="4%">입고수량</th>
+				<th width="4%">입고단가</th>
+				<th width="4%">입고금액</th>
+				
+			</tr>
+		</thead>
+		<tbody>
+		{% for object in object_list %}
+			<tr>
+				<td>{{ object.date|date:"Y-m-d" }}</td>
+				<td>{{ object.buyitem.buy }}</td>
+				<td>{{ object.drug.account }}</td>
+				<td>{{ object.drug }}</td>
+				<td style="text-align: center">{{ object.amount }}</td>
+				<td style="text-align: center">{{ object.drug.price|intcomma }}</td>
+				<td style="text-align: center">{{ object.total_price|intcomma }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+
+{% endblock stock_content %}

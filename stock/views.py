@@ -1,108 +1,112 @@
 from django.shortcuts import render
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, FormView, TemplateView
 from django.views.generic.dates import MonthArchiveView
-from django.db.models import F
+from django.db.models import F, Sum
 from django.http import HttpResponseRedirect
 
 from datetime import datetime, timedelta, date
+from itertools import groupby
 
 # Create your views here.
 from .models import StockRec
 from buy.models import BuyItem
-from .forms import DateRangeForm
-
-
-def BuyStockIn(request):
-	if request.method == 'POST':
-		in_list = request.POST
-		print(in_list)
-		for key, val in in_list.items():
-			is_end = in_list.get(key+'end', None)
-			if not key.isdigit():
-				continue
-			try:
-				item = BuyItem.objects.get(pk=int(key))
-			except BuyItem.DoesNotExist:
-				continue
-			else:
-				item.end = True if is_end=='on' else False
-				item.save()
-				amount= val
-				if amount.isdigit():
-					StockRec.objects.create(buyitem=item, amount=int(amount))
-					
-	return HttpResponseRedirect(reverse_lazy('stock:showincomplete'))
+from .forms import DateRangeForm, StockRecAmountForm
+from .utils import get_narcotic_classes
 
 
 
-
-
-
-def ShowIncompletes(request):
-	form = DateRangeForm(request.POST or None)
-	end = date.today()
-	start = end - timedelta(30)
-	if request.method == 'POST':
-		start = datetime.strptime(request.POST.get('start'), "%Y-%m-%d")
-		end = datetime.strptime(request.POST.get('end'), "%Y-%m-%d")
-		
-	query_set = BuyItem.objects.filter(buy__date__range=(start, end)).filter(end=False, buy__commiter__isnull=False).order_by('drug__firm','drug__name')
-	for e in query_set:
-		print(e)
-
-	object_list = filter(lambda item: not item.is_completed, query_set)
-	return render(request, 'stock/미입고내역.html', {'object_list':object_list, 'form':form})
-
-
-
-
-class StockInMTV(TemplateView):
-	template_name = 'stock/stockin_month.html'
-
-
-class StockInMAV(MonthArchiveView):
+class StockRecCV(CreateView):
 	model = StockRec
-	date_field = 'date'
-	make_object_list = True
 
+	def post(self, request):
+		for key in filter(lambda key:key.isdigit(), request.POST):
+			amount = request.POST[key]
+			end = True if request.POST.get(key+'end')=='on' else False
+			if not amount and not end:
+				continue
+			item = BuyItem.objects.get(pk=int(key))
+			if amount:
+				StockRec.objects.create(buyitem=item, amount=int(amount), date=request.POST['indate'])
+			elif end:
+				item.end = end
+				item.save()
+		return HttpResponseRedirect(request.META['HTTP_REFERER'])		
+		
+
+
+
+class StockIncompleteTV(TemplateView):
+	template_name = 'stock/incomplete_tv.html'
 
 	def get_context_data(self, **kwargs):
-		context = super(StockInMAV, self).get_context_data(**kwargs)
-		query_set = self.get_queryset().filter(amount__gt=0)
-		total_price = 0
-		for s in query_set:
-			total_price+=s.total_price
-		context['total_price'] = total_price
-		context['object_list'] = query_set
+		context = super(StockIncompleteTV, self).get_context_data(**kwargs)
+		context['form'] = DateRangeForm
+		return context
+
+
+class StockIncompleteLV(ListView):
+	template_name = 'stock/incomplete_lv.html'
+
+	def get_queryset(self):
+		start_date = datetime.strptime(self.request.GET.get('start'), "%Y-%m-%d")
+		end_date = datetime.strptime(self.request.GET.get('end'), "%Y-%m-%d")
+		queryset = BuyItem.objects.filter_by_date(start_date, end_date)
+		queryset =  queryset.filter(drug__narcotic_class__in=get_narcotic_classes(self.request.GET))
+		return filter(lambda item: not item.is_completed, queryset)
+
+	def get_context_data(self, **kwargs):
+		context = super(StockIncompleteLV, self).get_context_data(**kwargs)
+		context['form'] = DateRangeForm(self.request.GET)
+		context['amount_form'] = StockRecAmountForm
 		return context
 
 
 
+class StockInPTV(TemplateView):
+	template_name = 'stock/period_tv.html'
 
-def stockin_plv(request):
-	form = DateRangeForm(request.POST or None)
-	if request.method=='POST':
-		start = datetime.strptime(request.POST.get('start'),"%Y-%m-%d")
-		end = datetime.strptime(request.POST.get('end'),"%Y-%m-%d")
-		general = [0,2] if request.POST.get('general') else []
-		narcotic = [1] if request.POST.get('narcotic') else []
+	def get_context_data(self, **kwargs):
+		context = super(StockInPTV, self).get_context_data(**kwargs)
+		context['form'] = DateRangeForm
+		return context
 
+
+class StockInPLV(ListView):
+	model = StockRec
+	template_name = 'stock/period_plv_list.html'
+
+	def get_queryset(self):
+		req = self.request.GET.copy()
+		start = datetime.strptime(req.get('start'),"%Y-%m-%d")
+		end = datetime.strptime(req.get('end'),"%Y-%m-%d")
 		queryset = StockRec.objects.filter(
 				date__range=(start, end), 
 				amount__gt=0, 
-				drug__narcotic_class__in=general+narcotic
-			)
+				drug__narcotic_class__in=get_narcotic_classes(self.request.GET)
+		)
+		return queryset
+
+	def get_context_data(self, **kwargs):
+		context = super(StockInPLV, self).get_context_data(**kwargs)
+		context['form'] = DateRangeForm(self.request.GET)
 		total_price = 0
-		for s in queryset:
+		for s in self.get_queryset():
 			total_price+=s.total_price
-		return render(request, 'stock/stockin_period.html',{'object_list':queryset,'form':form,'total_price':total_price})
-	else:
-		return render(request, 'stock/stockin_period.html',{'form':form})
+		context['total_price'] = total_price
+		return context
 
 
+class StockInPLVano(StockInPLV):
+	template_name = 'stock/period_plv_ano.html'
 
-
+	def get_context_data(self, **kwargs):
+		context = super(StockInPLVano, self).get_context_data(**kwargs)
+		queryset = self.get_queryset().order_by('drug')
+		queryset = [{'drug':g ,'total_amount':sum(e.amount for e in l)} for g, l in groupby(queryset, lambda x: x.drug)]
+		context['object_list'] = queryset
+		context['total_price'] = sum(e['drug'].price * e['total_amount'] for e in queryset)
+		return context
 
 
 

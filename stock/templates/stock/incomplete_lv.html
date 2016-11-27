@@ -1,0 +1,49 @@
+{% extends "stock/incomplete_tv.html" %}
+
+{% block tablistclass %}class="active"{% endblock tablistclass %}
+
+{% block stock_content %}
+	<form  class="form-inline" action="{% url 'stock:stockin' %}" method="post">
+	{% csrf_token %}
+	{% block indate %}
+	<div class="form-group" style="display: inline;">
+		<label class="control-label">입고일자 지정:{{ form.indate }}</label>	
+	</div>
+	{% endblock indate %}
+	<table class="tablesorter">
+		<thead>
+			<tr>
+				<th width="1%">연번</th>
+				<th width="4%">발주번호</th>
+				<th width="6%">제약회사</th>
+				<th width="12%">약품명</th>
+				<th width="4%">발주수량</th>
+				<th width="4%">기입고수량</th>
+				<th width="4%">입고수량</th>
+				<th width="5%">거래처</th>
+				<th width="2%">마감</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for buyitem in object_list %}
+			<tr>
+				<td>{{ forloop.counter }}</td>
+				<td>{{ buyitem.buy }}</td>
+				<td>{{ buyitem.drug.firm }}</td>
+				<td>{{ buyitem.drug }}</td>
+				<td>{{ buyitem.amount }}</td>
+				<td>{{ buyitem.stockin_amount }}</td>
+				<td>
+					<input type="number" name="{{ buyitem.pk }}" min="0" max="{{ buyitem.incomplete_amount }}" step="{{ buyitem.drug.pkg_amount }}" togle="{{ buyitem.drug.pkg_amount }}">
+					{# <input type="number" name="amount" min="0" max="{{ buyitem.incomplete_amount }}" step="{{ buyitem.drug.pkg_amount }}" togle="{{ buyitem.drug.pkg_amount }}"> #}
+					{# <input type="hidden" name="buyitem" value="{{ buyitem.pk }},{{ buyitem.amount }}"> #}
+				</td>
+				<td>{{ buyitem.drug.account }}</td>
+				<td><input type="checkbox" name="{{ buyitem.pk }}end" tabindex="-1"></td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+			<input type="submit" value="입고잡기" style="">
+	</form>
+{% endblock stock_content %}

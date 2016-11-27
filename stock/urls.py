@@ -2,13 +2,13 @@ from django.conf.urls import url, patterns
 
 from .views import *
 urlpatterns = patterns('',
-	url(r'^stockin/$', BuyStockIn, name='stockin'),
-	url(r'^showincompletes/$', ShowIncompletes, name='showincomplete'),
+	
+	url(r'^showPeriod/$', StockInPTV.as_view(), name='show_period'),
+	url(r'^showPeriod/result/list$', StockInPLV.as_view(), name='show_period_result_list'),
+	url(r'^showPeriod/result/ano$', StockInPLVano.as_view(), name='show_period_result_ano'),
 
-	url(r'^showMonth/$', StockInMTV.as_view(), name='show_month'),
-	url(r'^showMonth/(?P<year>\d{4})/(?P<month>[a-z]{3})/$', StockInMAV.as_view(), name='stockin_month_archive'),
-
-
-	url(r'^showPeriod/', stockin_plv, name='stockin_period'),
+	url(r'^showIncomplete/$', StockIncompleteTV.as_view(), name='show_incomplete'),
+	url(r'^showIncomplete/result/$', StockIncompleteLV.as_view(), name='show_incomplete_list'),
+	url(r'^in/$', StockRecCV.as_view(), name='stockin')
 
 )

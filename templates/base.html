@@ -56,19 +56,10 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-	                                <a href="{% url 'stock:showincomplete' %}">미입고 조회(입고 잡기)</a>
+	                                <a href="{% url 'stock:show_incomplete' %}">미입고 조회(입고 잡기)</a>
                                 </li>
-                                <li class="dropdown-submenu">
-                                    <a>기간별입고현황</a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="/stock/showMonth{% now "/Y/b" %}">월간 입고현황</a>
-                                        </li>
-                                        <li>
-                                            <a href="{% url 'stock:stockin_period' %}">기간별 입고현황</a>
-                                        </li>
-                                      
-                                    </ul>
+                                <li>
+                                    <a href="{% url 'stock:show_period' %}">기간별 입고현황</a>
                                 </li>
                             </ul>
                         </li>
@@ -90,10 +81,10 @@
                                     <a href="{% url 'buy:buy_list' %}">구매 요청서 목록</a>
                                      <ul class="dropdown-menu">
                                         <li>
-                                            <a href="#">월간</a>
+                                            <a href="#">월간(개발이에요)</a>
                                         </li>
                                         <li>
-                                            <a href="#">일일</a>
+                                            <a href="#">일일(개발)</a>
                                         </li>
                                       
                                     </ul>
@@ -138,7 +129,7 @@
 </body>
 <script type="text/javascript">
     $(document).ready(function(){
-$("#mytable #checkall").click(function () {
+        $("#mytable #checkall").click(function () {
         if ($("#mytable #checkall").is(':checked')) {
             $("#mytable input[type=checkbox]").each(function () {
                 $(this).prop("checked", true);
@@ -152,7 +143,13 @@ $("#mytable #checkall").click(function () {
     });
     
     $("[data-toggle=tooltip]").tooltip();
-});
+ var agent = navigator.userAgent.toLowerCase();
+    if (agent.indexOf("chrome") != -1 || agent.indexOf("safari") != -1) {
+            $('[type=submit]').attr('hidden','hidden')
+    }
+
+    });
+
 
 
 </script>
