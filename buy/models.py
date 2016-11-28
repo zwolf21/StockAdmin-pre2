@@ -99,3 +99,10 @@ class BuyItem(models.Model):
 
 	def get_buy_price(self):
 		return self.amount * self.drug.price
+
+
+
+
+
+
+

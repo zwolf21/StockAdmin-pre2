@@ -35,7 +35,6 @@ class StockRecCV(CreateView):
 		
 
 
-
 class StockIncompleteTV(TemplateView):
 	template_name = 'stock/incomplete_tv.html'
 
@@ -84,7 +83,7 @@ class EndRollBack(UpdateView):
 	def form_valid(self, form):
 		form.instance.end = False
 		return super(EndRollBack, self).form_valid(form)
-		
+
 
 
 

@@ -16,6 +16,7 @@
 				<th>발주수량</th>
 				<th>입고수량</th>
 				<th>포장단위</th>
+				<th>마감일자</th>
 				<th>되돌리기</th>
 				
 			</tr>
@@ -29,6 +30,7 @@
 				<td>{{ object.amount }}</td>
 				<td>{{ object.stockin_amount }}</td>
 				<td>{{ object.drug.pkg_amount }}</td>
+				<td>{{ object.modify_date|date:"Y-m-d" }}</td>
 				<td>
 					<form action="{% url 'stock:rollback' object.pk %}" method="post">
 					{% csrf_token %}
