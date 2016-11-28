@@ -21,7 +21,7 @@
 			<td>
 				<form action="{% url 'buy:buyitem_delete' buyitem.buy buyitem.pk %}" method="post">
 					{% csrf_token %}
-					<button type="submit" class="submit-with-icon">
+					<button class="submit-with-icon">
 							<span class="glyphicon glyphicon-trash"></span>
 					</button>
 				</form>

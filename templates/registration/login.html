@@ -12,7 +12,7 @@
 <p>{{ form.username.label_tag }} {{ form.username }}</p>
 <p>{{ form.password.label_tag }} {{ form.password }}</p>
 <p><input type="submit" value="login"></p>
-<p><input type="hidden" name="next" value="{{ next }}"></p>
+<p><input type="hidden" name="next" value="{{ request.META.HTTP_REFERER }}"></p>
 <script type="text/javascript">document.getElementById('id_username').focus();</script>
 </form>
 

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy, reverse
-from django.views.generic import ListView, CreateView, DetailView, FormView, TemplateView
+from django.views.generic import ListView, CreateView, DetailView, FormView, TemplateView, UpdateView
 from django.views.generic.dates import MonthArchiveView
 from django.db.models import F, Sum
 from django.http import HttpResponseRedirect
@@ -12,7 +12,7 @@ from itertools import groupby
 from .models import StockRec
 from buy.models import BuyItem
 from .forms import DateRangeForm, StockRecAmountForm
-from .utils import get_narcotic_classes
+from .utils import get_narcotic_classes, get_date_range
 
 
 
@@ -45,13 +45,12 @@ class StockIncompleteTV(TemplateView):
 		return context
 
 
+
 class StockIncompleteLV(ListView):
 	template_name = 'stock/incomplete_lv.html'
 
 	def get_queryset(self):
-		start_date = datetime.strptime(self.request.GET.get('start'), "%Y-%m-%d")
-		end_date = datetime.strptime(self.request.GET.get('end'), "%Y-%m-%d")
-		queryset = BuyItem.objects.filter_by_date(start_date, end_date)
+		queryset = BuyItem.objects.filter_by_date(*get_date_range(self.request.GET))
 		queryset =  queryset.filter(drug__narcotic_class__in=get_narcotic_classes(self.request.GET))
 		return filter(lambda item: not item.is_completed, queryset)
 
@@ -60,6 +59,37 @@ class StockIncompleteLV(ListView):
 		context['form'] = DateRangeForm(self.request.GET)
 		context['amount_form'] = StockRecAmountForm
 		return context
+
+
+
+class StockInEndLV(ListView):
+	template_name = 'stock/end_lv.html'
+
+	def get_queryset(self):
+		return BuyItem.objects.filter(end=True, buy__date__range=get_date_range(self.request.GET))
+
+	def get_context_data(self, **kwargs):
+		context = super(StockInEndLV, self).get_context_data(**kwargs)
+		context['form'] = DateRangeForm(self.request.GET)
+		return context
+
+
+class EndRollBack(UpdateView):
+	model = BuyItem
+	fields = ['id']
+	def get_success_url(self):
+		return self.request.META['HTTP_REFERER']
+
+
+	def form_valid(self, form):
+		form.instance.end = False
+		return super(EndRollBack, self).form_valid(form)
+		
+
+
+
+
+
 
 
 
@@ -77,14 +107,11 @@ class StockInPLV(ListView):
 	template_name = 'stock/period_plv_list.html'
 
 	def get_queryset(self):
-		req = self.request.GET.copy()
-		start = datetime.strptime(req.get('start'),"%Y-%m-%d")
-		end = datetime.strptime(req.get('end'),"%Y-%m-%d")
 		queryset = StockRec.objects.filter(
-				date__range=(start, end), 
+				date__range=get_date_range(self.request.GET), 
 				amount__gt=0, 
 				drug__narcotic_class__in=get_narcotic_classes(self.request.GET)
-		)
+			)
 		return queryset
 
 	def get_context_data(self, **kwargs):
@@ -107,6 +134,20 @@ class StockInPLVano(StockInPLV):
 		context['object_list'] = queryset
 		context['total_price'] = sum(e['drug'].price * e['total_amount'] for e in queryset)
 		return context
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

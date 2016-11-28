@@ -1,5 +1,5 @@
 {% extends "stock/period_tv.html" %}
-
+{% load humanize %}
 {% block stock_title %}
 	<h3>입고되어야할 품목</h3>
 {% endblock stock_title %}
@@ -16,12 +16,17 @@
 
   {% block stock_script %}
   <script type="text/javascript">
- 	form = $('form')
+ 	form = $('form[name=show]')
   
   $('.list').click(function(){
   		form.attr('action',"{% url 'stock:show_incomplete_list' %}")
   		form.submit()
   });
+  $('.end').click(function(){
+      form.attr('action',"{% url 'stock:end' %}")
+      form.submit()
+  });
+
  $('#id_start, #id_end, #id_general, #id_psychotic, #id_narcotic').change(function(){
      form.attr('action',"{% url 'stock:show_incomplete_list' %}")
       form.submit()
