@@ -31,8 +31,20 @@ class BuyLV(ListView):
 
 
 
-class BuyDV(DetailView):
-	model = Buy
+# class BuyDV(DetailView):
+# 	model = Buy
+
+class BuyDV(ListView):
+	template_name = 'buy/buy_detail.html'
+
+	def get_queryset(self):
+		queryset = BuyItem.objects.filter(buy__slug=self.kwargs['slug']).order_by('drug__firm')
+		return queryset
+
+	def get_context_data(self, **kwargs):
+		context = super(BuyDV, self).get_context_data(**kwargs)
+		context['buy'] = Buy.objects.get(slug=self.kwargs['slug'])
+		return context
 
 
 @login_required

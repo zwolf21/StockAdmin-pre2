@@ -20,7 +20,11 @@
 		{% for object in object_list %}
 			<tr>
 				<td>{{ object }}</td>
+				{% if object.buyitem_set.all.count == 0 %}
+				<td>{{ object.description }}(폐기됨)</a></td>
+				{% else %}
 				<td><a href="{% url 'buy:buy_detail' object.slug %}">{{ object.description }}</a></td>
+				{% endif %}
 				<td>{{ object.date|date:"Y-m-d" }}</td>
 				<td>{{ object.commiter|default:"미승인" }}</td>
 				<td>{{ object.date|date:"Y-m-d" }}</td>
@@ -30,5 +34,5 @@
 	</table>
 	</content>
 </div>
-
+{% include "tablesorter_js.html" %}
 {% endblock content %}
