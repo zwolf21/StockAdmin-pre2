@@ -26,9 +26,29 @@
       form.attr('action',"{% url 'stock:end' %}")
       form.submit()
   });
+    var start = $("#id_start")
+    var end = $("#id_end")
+    $("#id_start").change(function(){
 
+      if(start.val() > end.val()){
+        end.val(start.val());
+      }
+    });
+    $("#id_end").change(function(){
+
+      if(start.val() > end.val()){
+        start.val(end.val());
+      }
+    });
  $('#id_start, #id_end, #id_general, #id_psychotic, #id_narcotic').change(function(){
-     form.attr('action',"{% url 'stock:show_incomplete_list' %}")
+   
+    if($('.active').attr('id')==='list')
+    {
+      form.attr('action',"{% url 'stock:show_incomplete_list' %}")
+    }else
+    {
+      form.attr('action',"{% url 'stock:end' %}")
+    }
       form.submit()
   });
   </script>

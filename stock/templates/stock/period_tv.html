@@ -55,6 +55,21 @@
   		form.submit()
   
   })
+  		var start = $("#id_start")
+		var end = $("#id_end")
+		$("#id_start").change(function(){
+
+			if(start.val() > end.val()){
+				end.val(start.val());
+			}
+		});
+		$("#id_end").change(function(){
+
+			if(start.val() > end.val()){
+				start.val(end.val());
+			}
+		});
+		$('input').checkboxradio();
   $('#id_start, #id_end, #id_general, #id_psychotic, #id_narcotic').change(function(){
 
   	if($('.active').attr('id')==='list')

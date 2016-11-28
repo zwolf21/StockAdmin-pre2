@@ -65,7 +65,11 @@ class StockInEndLV(ListView):
 	template_name = 'stock/end_lv.html'
 
 	def get_queryset(self):
-		return BuyItem.objects.filter(end=True, buy__date__range=get_date_range(self.request.GET))
+		return BuyItem.objects.filter(
+			end=True, 
+			buy__date__range=get_date_range(self.request.GET),
+			drug__narcotic_class__in=get_narcotic_classes(self.request.GET)
+			)
 
 	def get_context_data(self, **kwargs):
 		context = super(StockInEndLV, self).get_context_data(**kwargs)
