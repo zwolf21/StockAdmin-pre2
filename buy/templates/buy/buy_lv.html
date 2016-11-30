@@ -1,11 +1,9 @@
 {% extends "buy/base.html" %}
 
-{% block content %}
-<div class="content">
-	<header>
-	<h4>발주서리스트</h4>		
-	</header>
-	<content>
+{% block buy_title %} <h4>발주서 리스트</h4> {% endblock buy_title %}
+
+
+{% block buy_table %}
 	<table border="1" class="tablesorter">
 		<thead>
 			<tr>
@@ -32,7 +30,9 @@
 		{% endfor %}
 		</tbody>
 	</table>
-	</content>
-</div>
+{% endblock buy_table %}
+
+{% block buy_script %}
+	
 {% include "tablesorter_js.html" %}
-{% endblock content %}
+{% endblock buy_script %}

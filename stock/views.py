@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, FormView, TemplateView, UpdateView
 from django.views.generic.dates import MonthArchiveView
-from django.db.models import F, Sum
+from django.db.models import F, Sum, Q
 from django.http import HttpResponseRedirect
 
 from datetime import datetime, timedelta, date
@@ -49,8 +49,13 @@ class StockIncompleteLV(ListView):
 	template_name = 'stock/incomplete_lv.html'
 
 	def get_queryset(self):
+		name = self.request.GET.get('name')
 		queryset = BuyItem.objects.filter_by_date(*get_date_range(self.request.GET))
-		queryset =  queryset.filter(drug__narcotic_class__in=get_narcotic_classes(self.request.GET))
+		queryset =  queryset.filter(
+			Q(drug__name__icontains=name)|Q(buy__slug__icontains=name),
+			drug__narcotic_class__in=get_narcotic_classes(self.request.GET)
+		)
+	
 		return filter(lambda item: not item.is_completed, queryset)
 
 	def get_context_data(self, **kwargs):
@@ -110,7 +115,9 @@ class StockInPLV(ListView):
 	template_name = 'stock/period_plv_list.html'
 
 	def get_queryset(self):
+		name = self.request.GET.get('name')
 		queryset = StockRec.objects.filter(
+			Q(drug__name__icontains=name)|Q(buyitem__buy__slug__contains=name)|Q(date__contains=name),
 				date__range=get_date_range(self.request.GET), 
 				amount__gt=0, 
 				drug__narcotic_class__in=get_narcotic_classes(self.request.GET)

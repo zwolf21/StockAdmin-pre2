@@ -32,7 +32,6 @@ class Staff_memberRequiredMixin(object):
 def autocomplete(request):
 	if request.is_ajax():
 		kw = request.GET['term']
-		print(type(kw))
 		# qry = reduce(operator.__and__, (Q(name__contains=word) for word in kw))
 		# print(dir(qry))
 		queryset = Info.objects.filter(Q(name_as__contains=kw)).iterator()
@@ -45,7 +44,7 @@ def autocomplete(request):
 					'incompletes':drug.total_incomplete_amount,
 					'stockin_last':drug.last_stockin_date.strftime('%Y-%m-%d') if drug.last_stockin_date else ''
 				})
-		path = 'C:\\Users\\Hs\\Desktop\\log.txt'
+		
 		return HttpResponse(dumps(ret), content_type="application/json")
 
 

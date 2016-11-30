@@ -21,6 +21,13 @@
 				{{ form.end }}
 			</div>
 		</div>
+
+		<div class="form-group">
+		    <input id="search_window" type="text" placeholder="퀵필터" class="form-control input-sm" name="name">
+			<input type="submit" hidden>                          
+			<script>document.getElementById('search_window').focus();</script>  
+		</div>
+
 		<div class="form-group" style="display: inline;">
 			<div class="col-xs-8">
 				<label for="{{ form.general.auto_id }}" class="btn btn-success btn-xs">일반 {{ form.general }}<span class="badge">&check;</span></label>
@@ -30,8 +37,6 @@
 		</div>
 		
 		<label class="control-label" hidden>입고일자 지정{{ form.indate }}</label>	
-
-			
 	</form>
 	</div>
 
@@ -39,49 +44,49 @@
 {% block header %}
 <ul class="nav nav-tabs">
   {# <li class="active"><a href="#">Home</a></li> #}
-  <li id='list' {% block tablistclass %}{% endblock tablistclass %}><a class="list" href="#">내역별보기</a></li>
+  <li id='list' {% block tablistclass %}{% endblock tablistclass %} tabindex="-1"><a class="list" href="#" >내역별보기</a></li>
   <li id='ano' {% block tabanoclass %}{% endblock tabanoclass %}><a class="ano" href="#">품목별집계</a></li>
   {% block stock_script %}
   	
   <script type="text/javascript">
- 	form = $('form')
-  
-  $('.list').click(function(){
-  		form.attr('action',"{% url 'stock:show_period_result_list' %}")
-  		form.submit()
-  });
-  $('.ano').click(function(){
-  		form.attr('action', "{% url 'stock:show_period_result_ano' %}")
-  		form.submit()
-  
-  })
-  		var start = $("#id_start")
-		var end = $("#id_end")
-		$("#id_start").change(function(){
+  $(function(){
+	 	form = $('form')
+	  
+	  $('.list').click(function(){
+	  		form.attr('action',"{% url 'stock:show_period_result_list' %}")
+	  		form.submit()
+	  });
+	  $('.ano').click(function(){
+	  		form.attr('action', "{% url 'stock:show_period_result_ano' %}")
+	  		form.submit()
+	  
+	  })
+	  		var start = $("#id_start")
+			var end = $("#id_end")
+			$("#id_start").change(function(){
 
-			if(start.val() > end.val()){
-				end.val(start.val());
-			}
-		});
-		$("#id_end").change(function(){
+				if(start.val() > end.val()){
+					end.val(start.val());
+				}
+			});
+			$("#id_end").change(function(){
 
-			if(start.val() > end.val()){
-				start.val(end.val());
-			}
-		});
-		$('input').checkboxradio();
-  $('#id_start, #id_end, #id_general, #id_psychotic, #id_narcotic').change(function(){
+				if(start.val() > end.val()){
+					start.val(end.val());
+				}
+			});
+	  $('#id_start, #id_end, #id_general, #id_psychotic, #id_narcotic').change(function(){
 
-  	if($('.active').attr('id')==='list')
-  	{
-      form.attr('action',"{% url 'stock:show_period_result_list' %}")
-  	}else
-  	{
-  		form.attr('action',"{% url 'stock:show_period_result_ano' %}")
-  	}
-      form.submit()
-  });
-
+	  	if($('.active').attr('id')==='list')
+	  	{
+	      form.attr('action',"{% url 'stock:show_period_result_list' %}")
+	  	}else
+	  	{
+	  		form.attr('action',"{% url 'stock:show_period_result_ano' %}")
+	  	}
+	      form.submit()
+	  	});
+});
   </script>
   {% endblock stock_script %}
 </ul>
@@ -103,5 +108,5 @@
 
 {% include "tablesorter_js.html" %}
 {% include "datepicker_js.html" %}
-
+{% include "ajax_autocomplete_script.html" %}
 {% endblock content %}

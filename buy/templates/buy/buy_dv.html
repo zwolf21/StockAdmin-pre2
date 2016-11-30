@@ -1,6 +1,6 @@
 {% extends "buy/base.html" %}
-
-{% block content %}
+{% load humanize %}
+{% block buy_style %}
 <style type="text/css">
 	.content{
 		margin-left: 20px;
@@ -15,27 +15,30 @@
 		text-align: center;
 	}
 </style>
+{% endblock buy_style %}
 
-{% load humanize %}
-<div class="content">
-	
+{% block buy_header %}
 	<table width="100%" class="req-header">
 		<tr>
 			<td width="80%" rowspan="2">
 				<h4>구매요청서</h4>
 				<h5>거래처: {{ object_list.first.drug.account }}</h5>
-				<h5>발주번호: {{ object_list.first.buy.slug }}</h5>
+				<h5>발주번호: {{ object.slug }}</h5>
 			</td>
 			<td height="20px;" width="100px" class="user">담당</td>
 			<td width="100px;" class="user">승인 </td>
 		</tr>
 		<tr>
 			<td height="80px" class="user">{{ user }}</td>
-			<td class="user">{{ object_list.first.buy.commiter|default:"미승인" }}</td>
+			<td class="user">{{ object.commiter|default:"미승인" }}</td>
 		</tr>
 	</table>
-
-		<table class="tablesorter">
+{% if not object.commiter %}
+<a class="btn btn-warning" href="{% url 'buy:cart_rollback' object %}">발주삭제(장바구니로 되될리기)</a>
+{% endif %}
+{% endblock buy_header %}
+{% block buy_table %}
+	<table class="tablesorter">
 			<thead>
 			    <tr>
 					<th>No.</th>
@@ -48,7 +51,7 @@
 				</tr>
 			</thead>
 			<tbody>
-			{% for item in object_list.all %}
+			{% for item in object_list %}
 				<tr>
 					<td>{{ forloop.counter }}</td>
 					<td>{{ item.drug.edi }}</td>
@@ -65,22 +68,19 @@
 				</tr> -->
 			</tbody>
 		</table>
-</div>
-<div class="btn-group">
+{% endblock buy_table %}
 
-	
-	{% if not buy.commiter %}
-	<a class="btn btn-default" href="{% url 'buy:buyitem_add' buy %}">항목수정</a>
+{% block buy_footer %}
+	<div class="btn-group">
+	{% if not object.commiter %}
+		<a class="btn btn-default" href="{% url 'buy:buy_update' object %}">항목수정</a>
+		
 		{% if user.is_staff %}
-	<a class="btn btn-danger" href="{% url 'buy:commit' buy %}">발주승인</a>
+		<a class="btn btn-danger" href="{% url 'buy:commit' object %}">발주승인</a>
 		{% endif %}
 	{% else %}
-	<a class="btn btn-primary" href="{% url 'buy:narcotic' buy %}">마약구매서</a>
+		<a class="btn btn-primary" href="{% url 'buy:narcotic' object %}">마약구매서</a>
 	{% endif %}
+	</div>
 
-</div>
-<div>
-</div>
-
-{% include "ajax_autocomplete_script.html" %}
-{% endblock content %}
+{% endblock buy_footer %}
